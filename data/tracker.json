@@ -1,112 +1,272 @@
 {
   "updated": "2026-11-25",
   "capabilities": [
-    { "id": "create", "name": "Precise part from text or sketch", "short": "Create", "why": "Describe a part with dimensions and get a correct solid." },
-    { "id": "tree", "name": "Editable feature tree", "short": "Edit", "why": "Change a dimension later and the model updates, like Creo's model tree." },
-    { "id": "assembly", "name": "Assemblies with constraints", "short": "Assemble", "why": "Place parts with mates and keep them positioned when parts change." },
-    { "id": "drawings", "name": "2D production drawings", "short": "Drawings", "why": "Views, dimensions and annotations a workshop can build from, as DWG, DXF or PDF." },
-    { "id": "existing", "name": "Work on existing CAD", "short": "Existing", "why": "Open and change your old STEP, native or scanned parts, not only start from scratch." },
-    { "id": "consistent", "name": "Consistent results", "short": "Consistent", "why": "The same request gives the same correct part every time. Measured in our benchmark." }
+    {
+      "id": "create",
+      "name": "Precise part from text or sketch",
+      "short": "Create",
+      "why": "Describe a part with dimensions and get a correct solid."
+    },
+    {
+      "id": "tree",
+      "name": "Editable feature tree",
+      "short": "Edit",
+      "why": "Change a dimension later and the model updates, like Creo's model tree."
+    },
+    {
+      "id": "assembly",
+      "name": "Assemblies with constraints",
+      "short": "Assemble",
+      "why": "Place parts with mates and keep them positioned when parts change."
+    },
+    {
+      "id": "drawings",
+      "name": "2D production drawings",
+      "short": "Drawings",
+      "why": "Views, dimensions and annotations a workshop can build from, as DWG, DXF or PDF."
+    },
+    {
+      "id": "existing",
+      "name": "Work on existing CAD",
+      "short": "Existing",
+      "why": "Open and change your old STEP, native or scanned parts, not only start from scratch."
+    },
+    {
+      "id": "consistent",
+      "name": "Consistent results",
+      "short": "Consistent",
+      "why": "The same request gives the same correct part every time. Measured in our benchmark."
+    }
   ],
   "statuses": {
-    "yes": { "label": "Yes", "points": 2 },
-    "partial": { "label": "Partly", "points": 1 },
-    "planned": { "label": "Planned", "points": 0 },
-    "unverified": { "label": "Not verified", "points": 0 },
-    "untested": { "label": "Not tested yet", "points": 0 },
-    "no": { "label": "No", "points": 0 }
+    "yes": {
+      "label": "Yes",
+      "points": 2
+    },
+    "partial": {
+      "label": "Partly",
+      "points": 1
+    },
+    "planned": {
+      "label": "Planned",
+      "points": 0
+    },
+    "unverified": {
+      "label": "Not verified",
+      "points": 0
+    },
+    "untested": {
+      "label": "Not tested yet",
+      "points": 0
+    },
+    "no": {
+      "label": "No",
+      "points": 0
+    }
   },
   "candidates": [
     {
+      "slug": "zoo",
       "name": "Zoo (Design Studio + Zookeeper)",
       "url": "https://zoo.dev",
       "summary": "The most complete AI-first CAD today: text to parametric B-rep parts written as KCL code, with a feature tree you can edit.",
       "cells": {
-        "create": { "status": "yes", "note": "Accurate for simple dimensioned parts", "source": "https://www.wevolver.com/article/we-tested-7-text-to-cad-tools-are-they-actually-useful-for-engineers" },
-        "tree": { "status": "yes", "note": "Full feature tree and editable parameters", "source": "https://zoo.dev/docs/zoo-design-studio/text-to-cad" },
-        "assembly": { "status": "partial", "note": "Assemblies shipped; reliable mates still in progress for Q4 2026", "source": "https://zoo.dev/roadmap" },
-        "drawings": { "status": "unverified", "source": "https://zoo.dev/roadmap" },
-        "existing": { "status": "partial", "note": "Converts Creo, NX and SolidWorks files for enterprise pilots; STEP to editable model in progress", "source": "https://zoo.dev/enterprise" },
-        "consistent": { "status": "untested" }
+        "create": {
+          "status": "yes",
+          "note": "Accurate for simple dimensioned parts",
+          "source": "https://www.wevolver.com/article/we-tested-7-text-to-cad-tools-are-they-actually-useful-for-engineers"
+        },
+        "tree": {
+          "status": "yes",
+          "note": "Full feature tree and editable parameters",
+          "source": "https://zoo.dev/docs/zoo-design-studio/text-to-cad"
+        },
+        "assembly": {
+          "status": "partial",
+          "note": "Assemblies shipped; reliable mates still in progress for Q4 2026",
+          "source": "https://zoo.dev/roadmap"
+        },
+        "drawings": {
+          "status": "unverified"
+        },
+        "existing": {
+          "status": "partial",
+          "note": "Converts Creo, NX and SolidWorks files for enterprise pilots; STEP to editable model in progress",
+          "source": "https://zoo.dev/enterprise"
+        },
+        "consistent": {
+          "status": "untested"
+        }
       }
     },
     {
+      "slug": "backflip-ai",
       "name": "Backflip AI",
       "url": "https://www.backflip.ai",
       "summary": "Turns scans and STL meshes into parametric CAD with a feature tree. Strong on existing parts, not a design tool from scratch.",
       "cells": {
-        "create": { "status": "no", "note": "Starts from a mesh or scan, not a description" },
-        "tree": { "status": "yes", "note": "Output has a feature tree", "source": "https://www.engineering.com/backflips-back-is-the-mesh-to-cad-ai-real-this-time/" },
-        "assembly": { "status": "unverified" },
-        "drawings": { "status": "unverified" },
-        "existing": { "status": "yes", "note": "Scans and STLs to editable CAD, Fusion and SOLIDWORKS plugins", "source": "https://www.tctmagazine.com/backflip-ai-launches-ai-copilot-for-cad/" },
-        "consistent": { "status": "untested" }
+        "create": {
+          "status": "no",
+          "note": "Starts from a mesh or scan, not a description"
+        },
+        "tree": {
+          "status": "yes",
+          "note": "Output has a feature tree",
+          "source": "https://www.engineering.com/backflips-back-is-the-mesh-to-cad-ai-real-this-time/"
+        },
+        "assembly": {
+          "status": "unverified"
+        },
+        "drawings": {
+          "status": "unverified"
+        },
+        "existing": {
+          "status": "yes",
+          "note": "Scans and STLs to editable CAD, Fusion and SOLIDWORKS plugins",
+          "source": "https://www.tctmagazine.com/backflip-ai-launches-ai-copilot-for-cad/"
+        },
+        "consistent": {
+          "status": "untested"
+        }
       }
     },
     {
+      "slug": "autodesk-fusion-ai",
       "name": "Autodesk Fusion AI",
       "url": "https://www.autodesk.com/products/fusion-360/overview",
       "summary": "AI features inside a full parametric CAD system. Already automates drawings; text to CAD is useful for concepts.",
       "cells": {
-        "create": { "status": "partial", "note": "Useful for concepts", "source": "https://www.getleo.ai/blog/best-text-to-cad-tools-2026" },
-        "tree": { "status": "unverified" },
-        "assembly": { "status": "unverified" },
-        "drawings": { "status": "yes", "note": "Automatic views, dimensions, annotations and BOM from the 3D model", "source": "https://www.autodesk.com/products/fusion-360/blog/ai-drawing-automation-in-autodesk-fusion-revolutionizing-the-design-process/" },
-        "existing": { "status": "unverified" },
-        "consistent": { "status": "untested" }
+        "create": {
+          "status": "partial",
+          "note": "Useful for concepts",
+          "source": "https://www.getleo.ai/blog/best-text-to-cad-tools-2026"
+        },
+        "tree": {
+          "status": "unverified"
+        },
+        "assembly": {
+          "status": "unverified"
+        },
+        "drawings": {
+          "status": "yes",
+          "note": "Automatic views, dimensions, annotations and BOM from the 3D model",
+          "source": "https://www.autodesk.com/products/fusion-360/blog/ai-drawing-automation-in-autodesk-fusion-revolutionizing-the-design-process/"
+        },
+        "existing": {
+          "status": "unverified"
+        },
+        "consistent": {
+          "status": "untested"
+        }
       }
     },
     {
+      "slug": "adam",
       "name": "Adam",
       "url": "https://adamcad.com",
       "summary": "Text to 3D with part editing and parameters. Fast for concepts and prototypes.",
       "cells": {
-        "create": { "status": "yes", "note": "Quick parametric concept models", "source": "https://www.rapiddirect.com/blog/best-ai-cad-tools-review/" },
-        "tree": { "status": "partial", "note": "Part editing and parameters", "source": "https://www.myarchitectai.com/blog/ai-cad" },
-        "assembly": { "status": "unverified" },
-        "drawings": { "status": "unverified" },
-        "existing": { "status": "unverified" },
-        "consistent": { "status": "untested" }
+        "create": {
+          "status": "yes",
+          "note": "Quick parametric concept models",
+          "source": "https://www.rapiddirect.com/blog/best-ai-cad-tools-review/"
+        },
+        "tree": {
+          "status": "partial",
+          "note": "Part editing and parameters",
+          "source": "https://www.myarchitectai.com/blog/ai-cad"
+        },
+        "assembly": {
+          "status": "unverified"
+        },
+        "drawings": {
+          "status": "unverified"
+        },
+        "existing": {
+          "status": "unverified"
+        },
+        "consistent": {
+          "status": "untested"
+        }
       }
     },
     {
+      "slug": "draftaid",
       "name": "DraftAid",
       "url": "https://draftaid.io",
-      "summary": "Does one job: production drawings from 3D models, in DWG, DXF or PDF, inside SOLIDWORKS and Inventor. The drawing piece of the puzzle.",
+      "summary": "Does one job: production drawings from existing 3D models, with your company templates, exported as DWG, DXF, IDW or PDF. The drawing piece of the puzzle.",
       "cells": {
-        "create": { "status": "no", "note": "Needs an existing 3D model" },
-        "tree": { "status": "no" },
-        "assembly": { "status": "no" },
-        "drawings": { "status": "yes", "note": "Views, sections and details as DWG, DXF or PDF", "source": "https://aidirectory.aecmag.com/?p=298" },
-        "existing": { "status": "partial", "note": "Works on your existing 3D models, for drawings only", "source": "https://draftaid.io/product/" },
-        "consistent": { "status": "untested" }
+        "create": {
+          "status": "no",
+          "note": "Needs an existing 3D model"
+        },
+        "tree": {
+          "status": "no"
+        },
+        "assembly": {
+          "status": "no"
+        },
+        "drawings": {
+          "status": "yes",
+          "note": "Batch 2D drawings from 3D, DWG, DXF or PDF",
+          "source": "https://draftaid.io/product/"
+        },
+        "existing": {
+          "status": "partial",
+          "note": "Works on your existing 3D models, for drawings only",
+          "source": "https://draftaid.io/product/"
+        },
+        "consistent": {
+          "status": "untested"
+        }
       }
     },
     {
+      "slug": "luxxo-cad",
       "name": "Luxxo CAD",
       "url": "https://luxxo.sk/ai-cad/",
       "publisher": true,
       "summary": "Text and sketch to 3D CAD, free on the web and Android. Made by Braytron's publisher and scored by the same rules.",
       "cells": {
-        "create": { "status": "yes", "note": "Text and sketch input", "source": "https://cad.luxxo.sk" },
-        "tree": { "status": "unverified" },
-        "assembly": { "status": "unverified" },
-        "drawings": { "status": "unverified" },
-        "existing": { "status": "unverified" },
-        "consistent": { "status": "untested" }
+        "create": {
+          "status": "yes",
+          "note": "Text and sketch input",
+          "source": "https://cad.luxxo.sk"
+        },
+        "tree": {
+          "status": "unverified"
+        },
+        "assembly": {
+          "status": "unverified"
+        },
+        "drawings": {
+          "status": "unverified"
+        },
+        "existing": {
+          "status": "unverified"
+        },
+        "consistent": {
+          "status": "untested"
+        }
       }
     }
   ],
   "incumbents": [
     {
       "name": "PTC Creo",
-      "text": "Creo 13 added the Creo AI Assistant in June 2026. Its first tier gives guidance and troubleshooting in a chat, a beta tier reads the open model, and an Automate tier is announced. It helps you use Creo; it does not model for you yet.",
+      "text": "Creo 13, released in June 2026, added the Creo AI Assistant: a chat inside Creo that gives best-practice guidance and troubleshooting. A beta reads the open 3D model to flag design issues and check compliance. It helps you use Creo; it does not model for you yet.",
       "source": "https://www.ptc.com/en/news/2026/ptc-brings-ai-powered-guidance-to-the-design-environment-with-creo-13"
     },
     {
       "name": "Autodesk AutoCAD",
       "text": "Autodesk Assistant in AutoCAD answers questions, checks drawings against CAD standards and reads drawing context. Markup Assist can carry out simple commands such as move, copy and delete from PDF markups. Drafting itself is still manual.",
       "source": "https://www.autodesk.com/products/AutoCAD/features"
+    }
+  ],
+  "changes": [
+    {
+      "date": "2026-11-25",
+      "text": "Tracker launched with six contenders. Zoo leads with 6 of 12 points; no tool covers all six capabilities."
     }
   ]
 }

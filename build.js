@@ -139,7 +139,11 @@ function loadBenchmark() {
 function loadTracker() {
   const t = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'tracker.json'), 'utf8'));
   const caps = t.capabilities.map(c => c.id);
+  const seen = new Set();
   t.candidates.forEach(c => {
+    if (!/^[a-z0-9-]+$/.test(c.slug || '')) fail(`tracker.json ${c.name}: needs a lowercase "slug"`);
+    if (seen.has(c.slug)) fail(`tracker.json: duplicate slug ${c.slug}`);
+    seen.add(c.slug);
     for (const id of caps) {
       const cell = c.cells[id];
       if (!cell) fail(`tracker.json ${c.name}: missing capability "${id}"`);
@@ -149,11 +153,17 @@ function loadTracker() {
     c.points = caps.reduce((s, id) => s + (c.cells[id] ? t.statuses[c.cells[id].status].points : 0), 0);
   });
   t.max = caps.length * 2;
+  (t.changes || []).forEach((ch, i) => { if (!/^\d{4}-\d{2}-\d{2}$/.test(ch.date || '') || !ch.text) fail(`tracker.json changes #${i}: needs date YYYY-MM-DD and text`); });
+  t.changes = (t.changes || []).sort((a, b) => b.date.localeCompare(a.date));
   t.candidates.sort((a, b) => b.points - a.points);
   return t;
 }
 
-function trackerTable(t) {
+function trackerTable(t, only) {
+  const caps = only ? t.capabilities.filter(c => only.includes(c.id)) : t.capabilities;
+  const pts = (c) => caps.reduce((s2, cap) => s2 + t.statuses[c.cells[cap.id].status].points, 0);
+  const max = caps.length * 2;
+  const rows = [...t.candidates].sort((a, b) => pts(b) - pts(a));
   const mark = (cell) => {
     const st = t.statuses[cell.status];
     const inner = `<span class="mk mk-${cell.status}" aria-hidden="true"></span><span class="st">${esc(st.label)}</span>${cell.note ? `<span class="nt">${esc(cell.note)}</span>` : ''}`;
@@ -162,16 +172,39 @@ function trackerTable(t) {
   return `
 <div class="track-wrap" tabindex="0" role="region" aria-label="Replacement tracker table">
 <table class="track">
-  <thead><tr><th scope="col" class="c-tool">Contender</th><th scope="col" class="c-score">Score</th>${t.capabilities.map(c => `<th scope="col" title="${esc(c.why)}">${esc(c.name)}</th>`).join('')}</tr></thead>
-  <tbody>${t.candidates.map(c => `
+  <thead><tr><th scope="col" class="c-tool">Contender</th><th scope="col" class="c-score">Score</th>${caps.map(c => `<th scope="col" title="${esc(c.why)}">${esc(c.name)}</th>`).join('')}</tr></thead>
+  <tbody>${rows.map(c => `
     <tr${c.publisher ? ' class="own"' : ''}>
-      <th scope="row" class="c-tool"><a href="${esc(c.url)}"${c.publisher ? '' : ' rel="noopener"'}>${esc(c.name)}</a>${c.publisher ? '<small>From our publisher</small>' : ''}</th>
-      <td class="c-score"><span class="score"><b>${c.points}</b>/${t.max}</span><span class="bar"><i style="width:${Math.round(c.points / t.max * 100)}%"></i></span></td>
-      ${t.capabilities.map(cap => `<td>${mark(c.cells[cap.id])}</td>`).join('')}
+      <th scope="row" class="c-tool"><a href="/contenders/${c.slug}/">${esc(c.name)}</a>${c.publisher ? '<small>From our publisher</small>' : ''}</th>
+      <td class="c-score"><span class="score"><b>${pts(c)}</b>/${max}</span><span class="bar"><i style="width:${Math.round(pts(c) / max * 100)}%"></i></span></td>
+      ${caps.map(cap => `<td>${mark(c.cells[cap.id])}</td>`).join('')}
     </tr>`).join('')}
   </tbody>
 </table>
 </div>`;
+}
+
+function loadPages(tracker) {
+  const dir = path.join(ROOT, 'content', 'pages');
+  if (!fs.existsSync(dir)) return [];
+  const ids = new Set(tracker.capabilities.map(c => c.id));
+  return fs.readdirSync(dir).filter(f => f.endsWith('.md')).map(file => {
+    const raw = fs.readFileSync(path.join(dir, file), 'utf8');
+    const m = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+    if (!m) { fail(`pages/${file}: missing front matter`); return null; }
+    const meta = {};
+    for (const l of m[1].split('\n')) { const i = l.indexOf(':'); if (i > 0) meta[l.slice(0, i).trim()] = l.slice(i + 1).trim(); }
+    for (const k of ['title', 'description', 'focus']) if (!meta[k]) fail(`pages/${file}: missing "${k}"`);
+    const focus = (meta.focus || '').split(',').map(x => x.trim()).filter(Boolean);
+    focus.forEach(f => { if (!ids.has(f)) fail(`pages/${file}: unknown focus "${f}"`); });
+    const slug = file.replace(/\.md$/, '');
+    return { ...meta, focus, slug, url: `/${slug}/`, html: markdown(m[2].trim()) };
+  }).filter(Boolean);
+}
+
+function changeList(changes, n) {
+  if (!changes || !changes.length) return '';
+  return `<ol class="changes">${changes.slice(0, n).map(c => `<li><time datetime="${c.date}">${fmtDate(c.date)}</time><p>${inline(c.text)}</p></li>`).join('')}</ol>`;
 }
 
 let SHOW_BENCHMARK = false;
@@ -179,7 +212,7 @@ let SHOW_BENCHMARK = false;
 // ---------- templates ----------
 function layout({ title, description, canonical, body, jsonld, type = 'website', current = '', noindex = false }) {
   const fullTitle = title ? `${title} | ${SITE.name}` : `${SITE.name}: ${SITE.tagline}`;
-  const navItems = [['/', 'Tracker', 'home'], ['/news/', 'News', 'news']];
+  const navItems = [['/', 'Tracker', 'home'], ['/ai-alternative-to-creo/', 'vs Creo', 'creo'], ['/ai-alternative-to-autocad/', 'vs AutoCAD', 'autocad'], ['/news/', 'News', 'news']];
   if (SHOW_BENCHMARK) navItems.push(['/benchmark/', 'Benchmark', 'benchmark']);
   navItems.push(['/about/', 'About', 'about']);
   const nav = navItems
@@ -198,7 +231,10 @@ ${noindex ? '<meta name="robots" content="noindex">' : ''}
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${SITE.url}${canonical}">
 <meta property="og:site_name" content="${SITE.name}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${SITE.url}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="alternate" type="application/rss+xml" title="${SITE.name} news" href="/feed.xml">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F3FB4'/%3E%3Cpath d='M9 8h9a5 5 0 0 1 0 10H9zm0 10h10a5 5 0 0 1 0 10H9z' fill='none' stroke='%23fff' stroke-width='3'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -315,6 +351,7 @@ function build() {
   const tools = loadTools();
   const bench = loadBenchmark();
   const tracker = loadTracker();
+  const pages = loadPages(tracker);
   SHOW_BENCHMARK = bench.results.length > 0;
   if (errors.length) {
     console.error('Build failed:\n- ' + errors.join('\n- '));
@@ -337,6 +374,8 @@ function build() {
   </div>
   ${trackerTable(tracker)}
   <p class="legend">Scoring: Yes = 2 points, Partly = 1, everything else 0. Every Yes and Partly links to its source. Consistency is only scored from our own <a href="/about/#tracker">hands-on tests</a>.</p>
+  ${tracker.changes.length ? `<div class="recent"><h3>Latest tracker changes</h3>${changeList(tracker.changes, 3)}</div>` : ''}
+  <p class="deep">Read the full breakdown for <a href="/ai-alternative-to-creo/">Creo users</a> and <a href="/ai-alternative-to-autocad/">AutoCAD users</a>.</p>
   <dl class="caps">${tracker.capabilities.map(c => `<div><dt>${esc(c.name)}</dt><dd>${esc(c.why)}</dd></div>`).join('')}</dl>
 </section>
 <section class="incumbents" aria-labelledby="h-inc">
@@ -428,6 +467,57 @@ ${latest ? `
 
   write('benchmark/index.html', benchmarkPage(bench));
 
+  for (const pg of pages) {
+    const key = pg.slug.includes('creo') ? 'creo' : pg.slug.includes('autocad') ? 'autocad' : '';
+    write(`${pg.slug}/index.html`, layout({
+      title: pg.title, description: pg.description, canonical: pg.url, type: 'article', current: key,
+      jsonld: { '@context': 'https://schema.org', '@type': 'Article', headline: pg.title, description: pg.description, dateModified: tracker.updated, mainEntityOfPage: SITE.url + pg.url, publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.publisherUrl } },
+      body: `
+<article class="post">
+  <header>
+    <time datetime="${tracker.updated}">Updated ${fmtDate(tracker.updated)}</time>
+    <h1>${esc(pg.title)}</h1>
+    <p class="lede">${esc(pg.description)}</p>
+  </header>
+  <div class="prose">${pg.html}</div>
+</article>
+<section class="tracker" aria-labelledby="h-sub">
+  <h2 id="h-sub" class="section-title">How the contenders score on what matters here</h2>
+  ${trackerTable(tracker, pg.focus)}
+  <p class="legend">Scores count only the capabilities above. See the <a href="/#tracker">full tracker</a> for all six.</p>
+</section>`
+    }));
+  }
+
+  tracker.candidates.forEach((c, rank) => {
+    const others = tracker.candidates.filter(o => o !== c).slice(0, 3);
+    write(`contenders/${c.slug}/index.html`, layout({
+      title: `${c.name}: can it replace Creo or AutoCAD?`, canonical: `/contenders/${c.slug}/`, current: 'home',
+      description: `${c.name} scores ${c.points} of ${tracker.max} in our AI CAD replacement tracker. What it can and cannot do yet, with sources.`.slice(0, 165),
+      jsonld: { '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: c.name, url: c.url, applicationCategory: 'DesignApplication', description: c.summary },
+      body: `
+<article class="post contender">
+  <header>
+    <time datetime="${tracker.updated}">Updated ${fmtDate(tracker.updated)}</time>
+    <h1>${esc(c.name)}</h1>
+    <p class="lede">${esc(c.summary)}</p>
+    ${c.publisher ? '<p class="pubnote">Made by Braytron\'s publisher. Scored by the same rules as every other tool.</p>' : ''}
+  </header>
+  <div class="bigscore"><span><b>${c.points}</b>/${tracker.max}</span><span class="bar"><i style="width:${Math.round(c.points / tracker.max * 100)}%"></i></span><p>Rank ${rank + 1} of ${tracker.candidates.length} in the replacement tracker.</p></div>
+  <ul class="capcheck">${tracker.capabilities.map(cap => { const cell = c.cells[cap.id]; return `
+    <li>
+      <span class="mk mk-${cell.status}" aria-hidden="true"></span>
+      <div><h2>${esc(cap.name)}: ${esc(tracker.statuses[cell.status].label)}</h2>
+      <p>${cell.note ? esc(cell.note) + '. ' : ''}${cell.source ? `<a href="${esc(cell.source)}" rel="noopener">Source</a>` : ''}</p>
+      <p class="why">${esc(cap.why)}</p></div>
+    </li>`; }).join('')}
+  </ul>
+  <p class="visit"><a href="${esc(c.url)}"${c.publisher ? '' : ' rel="noopener"'}>Visit ${esc(c.name)}</a></p>
+  <nav class="also" aria-label="Other contenders"><h2>Compare with</h2><ul>${others.map(o => `<li><a href="/contenders/${o.slug}/">${esc(o.name)}</a> <span>${o.points}/${tracker.max}</span></li>`).join('')}</ul></nav>
+</article>`
+    }));
+  });
+
   write('404.html', layout({ title: 'Page not found', description: 'This page does not exist.', canonical: '/404.html', body: `<section class="archive"><h1>Page not found</h1><p>The page may have moved. Go to the <a href="/">shortlist</a> or browse the <a href="/news/">news</a>.</p></section>` }));
 
   // RSS
@@ -436,6 +526,8 @@ ${latest ? `
 
   // Sitemap
   const urls = [['/', posts[0] ? posts[0].date : tools.updated], ['/news/', posts[0] ? posts[0].date : tools.updated], ['/about/', tools.updated], ...posts.map(p => [p.url, p.date])];
+  pages.forEach(pg => urls.push([pg.url, tracker.updated]));
+  tracker.candidates.forEach(c => urls.push([`/contenders/${c.slug}/`, tracker.updated]));
   if (SHOW_BENCHMARK) urls.push(['/benchmark/', bench.results.map(r => r.date || tools.updated).sort().pop()]);
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(([u, d]) => `<url><loc>${SITE.url}${u}</loc><lastmod>${d}</lastmod></url>`).join('')}</urlset>`);
   write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${SITE.url}/sitemap.xml\n`);

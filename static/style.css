@@ -200,3 +200,29 @@ time { color: var(--slate); font-size: var(--step--1); font-weight: 500; }
   .c-score { width: 5rem; min-width: 5rem; }
   .track { min-width: 900px; }
 }
+
+/* Change log, contender pages */
+.recent { margin: 0 0 1.6rem; }
+.recent h3 { font-size: var(--step-0); margin: 0 0 .6rem; font-weight: 700; }
+.changes { list-style: none; margin: 0; padding: 0; max-width: var(--measure); }
+.changes li { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 1rem; padding: .5rem 0; border-top: 1px solid var(--rule); }
+.changes p { margin: 0; }
+.deep { font-weight: 600; margin: 0 0 2rem; }
+.pubnote { color: var(--dykem); font-weight: 600; margin: 1rem 0 0; }
+.bigscore { max-width: 30rem; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: .4rem 1.4rem; margin: 0 0 2.4rem; }
+.bigscore span:first-child { color: var(--slate); font-size: var(--step-1); }
+.bigscore b { font-size: var(--step-4); line-height: 1; color: var(--ink); font-variation-settings: 'wdth' 125; font-weight: 800; }
+.bigscore .bar { height: 10px; margin: 0; }
+.bigscore p { grid-column: 1 / -1; margin: 0; color: var(--slate); }
+.capcheck { list-style: none; padding: 0; margin: 0 0 2rem; max-width: 52rem; }
+.capcheck li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 1rem; padding: 1.1rem 0; border-top: 1px solid var(--rule); }
+.capcheck .mk { width: 22px; height: 22px; margin-top: .2rem; }
+.capcheck h2 { font-size: var(--step-1); margin: 0 0 .3rem; line-height: 1.25; font-variation-settings: 'wdth' 108; }
+.capcheck p { margin: 0 0 .25rem; }
+.capcheck .why { color: var(--slate); font-size: .92rem; }
+.visit { font-weight: 700; font-size: var(--step-1); }
+.also { margin-top: 2.4rem; padding-top: 1.4rem; border-top: 2px solid var(--ink); }
+.also h2 { font-size: var(--step-1); margin: 0 0 .6rem; }
+.also ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .6rem 2rem; }
+.also span { color: var(--slate); font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .changes li { grid-template-columns: 1fr; gap: .1rem; } .masthead nav { gap: .9rem; font-size: .95rem; } }

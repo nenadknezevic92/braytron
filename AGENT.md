@@ -18,7 +18,8 @@ Do not edit `data/benchmark.json`. Benchmark results are entered only from tests
 1. Read the 5 newest files in `content/posts/` so you don't repeat a topic or a story.
 2. Research news from roughly the last 7 days with web search. Start with the tracker: search each contender in `data/tracker.json` for new releases, plus searches for new AI CAD tools, "text to CAD", "AI CAD agent", "AI drawing generation", "AI Creo", "AI AutoCAD", PTC Creo AI Assistant and Autodesk Assistant updates. Then cover the wider areas (scan-to-CAD, AI CAM, simulation, additive) only if the tracker had no news. Prefer original sources: company announcements, trade press (engineering.com, develop3d, 3dprint.com, Design News, MMS, All3DP, TCT, VoxelMatters), research papers.
 3. Prefer an angle that moves the tracker: a contender shipping a capability, a new serious contender, or Creo/AutoCAD adding AI that models for you. Otherwise pick ONE angle worth reading: a significant launch, a clear trend across several announcements, or a practical comparison. If nothing new and significant happened, write a practical how-to or comparison about tools on the shortlist instead. Never invent news.
-4. Write the article (700 to 1,100 words). End it with a short "What this means in practice" section written for a working engineer. If the benchmark page has results relevant to the topic, link to `/benchmark/`. Format:
+4. Write the article (700 to 1,100 words). End it with a short "What this means in practice" section written for a working engineer. Link to the contender pages (`/contenders/<slug>/`) and to `/ai-alternative-to-creo/` or `/ai-alternative-to-autocad/` where relevant. If the benchmark page has results relevant to the topic, link to `/benchmark/`.
+   Keep `content/pages/ai-alternative-to-creo.md` and `ai-alternative-to-autocad.md` current: when the tracker changes in a way that makes a sentence there wrong, fix that sentence. Format:
 
 ```
 ---
@@ -39,6 +40,7 @@ Paragraphs. Link each factual claim to its source with [text](https://...).
    - Never set `consistent` to anything but `untested`; only the site owner's benchmark scores it.
    - Add a new contender only if it ships at least one capability as `yes` with a source. Keep at most 10 contenders.
    - Update the `incumbents` texts when PTC or Autodesk ship AI that changes them.
+   - Whenever a status changes or a contender is added, add one entry at the top of `changes`: `{"date": "YYYY-MM-DD", "text": "Zoo: assemblies with constraints moved from Partly to Yes after the v2 release."}` (one plain sentence, may include one [link](https://...)). New contenders need a unique lowercase `slug`; this creates their page at /contenders/<slug>/.
    - Set `"updated"` to today's date whenever you change the file. Never change the Luxxo CAD entry beyond what the owner gives you.
 6. Update `data/tools.json` only when needed:
    - Add a tool only if it is notable (major vendor, real customers, or wide coverage) and fits a category. Keep each category at 8 tools or fewer; to add one to a full category, remove the weakest.
