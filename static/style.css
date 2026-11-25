@@ -1,0 +1,142 @@
+/* Braytron: machinist's layout-blue on mill-scale grey. One family (Archivo), width axis does the work. */
+:root {
+  --paper: #E6E9E4;
+  --paper-2: #EEF0EC;
+  --ink: #1C2329;
+  --slate: #56626C;
+  --rule: #C3CBC9;
+  --dykem: #1F3FB4;
+  --dykem-wash: #DCE1F1;
+  --measure: 68ch;
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.3rem;
+  --step-2: 1.65rem;
+  --step-3: clamp(2rem, 4.4vw, 3rem);
+  --step-4: clamp(2.6rem, 7.6vw, 5.6rem);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Archivo', system-ui, sans-serif;
+  font-size: var(--step-0);
+  line-height: 1.55;
+  font-variation-settings: 'wdth' 100;
+}
+a { color: var(--dykem); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--dykem); outline-offset: 3px; border-radius: 2px; }
+
+.skip { position: absolute; left: -999px; top: 0; background: var(--ink); color: #fff; padding: .6rem 1rem; }
+.skip:focus { left: 1rem; top: 1rem; z-index: 10; }
+
+main, .masthead, .foot { max-width: 1160px; margin: 0 auto; padding-left: clamp(1.1rem, 4vw, 2.5rem); padding-right: clamp(1.1rem, 4vw, 2.5rem); }
+
+/* Masthead */
+.masthead { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding-top: 1.4rem; padding-bottom: 1.4rem; flex-wrap: wrap; }
+.brand { font-weight: 800; font-size: 1.35rem; letter-spacing: .01em; color: var(--ink); text-decoration: none; font-variation-settings: 'wdth' 125; }
+.masthead nav { display: flex; gap: 1.4rem; }
+.masthead nav a { color: var(--slate); text-decoration: none; font-weight: 500; }
+.masthead nav a:hover, .masthead nav a[aria-current="page"] { color: var(--ink); text-decoration: underline; text-decoration-color: var(--dykem); text-decoration-thickness: 2px; }
+
+/* Hero: the expanded headline is the one loud thing on the page */
+.hero { padding: clamp(2.5rem, 8vw, 6rem) 0 clamp(2rem, 5vw, 3.5rem); border-bottom: 3px solid var(--dykem); }
+.hero h1 {
+  margin: 0;
+  font-size: var(--step-4);
+  line-height: .98;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  font-variation-settings: 'wdth' 125;
+  max-width: 14ch;
+  text-wrap: balance;
+}
+.lede { font-size: var(--step-1); line-height: 1.45; color: var(--slate); max-width: 46ch; margin: 1.4rem 0 0; }
+
+.section-title { font-size: var(--step-2); font-weight: 750; font-variation-settings: 'wdth' 118; margin: 0 0 1.2rem; line-height: 1.15; }
+
+/* Latest */
+.lead { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; padding: clamp(2rem, 5vw, 3.5rem) 0; border-bottom: 1px solid var(--rule); }
+.lead article h3 { font-size: var(--step-3); line-height: 1.08; margin: .3rem 0 .7rem; font-variation-settings: 'wdth' 112; font-weight: 750; max-width: 24ch; text-wrap: balance; }
+.lead article h3 a, .posts h3 a { color: var(--ink); text-decoration: none; }
+.lead article h3 a:hover, .posts h3 a:hover { text-decoration: underline; text-decoration-color: var(--dykem); }
+.lead article p { max-width: var(--measure); margin: 0; color: var(--slate); font-size: var(--step-1); line-height: 1.45; }
+time { color: var(--slate); font-size: var(--step--1); font-weight: 500; }
+.more { margin: 1.6rem 0 0; font-weight: 600; }
+
+.posts { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 1.6rem 2.4rem; }
+.posts li { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.posts h3 { font-size: var(--step-1); line-height: 1.25; margin: .25rem 0 .4rem; font-weight: 700; }
+.posts p { margin: 0; color: var(--slate); font-size: .98rem; }
+
+/* Shortlist: a tool crib. Category in the margin, tools as rows. */
+.shortlist { padding: clamp(2rem, 5vw, 3.5rem) 0 2rem; }
+.shortlist-head p { max-width: var(--measure); color: var(--slate); margin: 0 0 2rem; }
+.crib { display: grid; grid-template-columns: minmax(0, 17rem) minmax(0, 1fr); gap: 1rem 3rem; padding: 2rem 0; border-top: 2px solid var(--ink); }
+.crib-head { align-self: start; position: sticky; top: 1rem; }
+.crib-head h3 { margin: 0 0 .5rem; font-size: var(--step-1); line-height: 1.2; font-weight: 750; font-variation-settings: 'wdth' 112; }
+.crib-head p { margin: 0; color: var(--slate); font-size: .95rem; }
+
+.tools { list-style: none; margin: 0; padding: 0; }
+.tools li {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr) 7.5rem;
+  grid-template-areas: "name what gauge" "name best gauge";
+  gap: .2rem 1.6rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.tools li:last-child { border-bottom: 0; }
+.tools li.own { background: var(--dykem-wash); margin: 0 -.9rem; padding-left: .9rem; padding-right: .9rem; border-radius: 4px; border-bottom-color: transparent; }
+.tool-name { grid-area: name; font-weight: 700; line-height: 1.3; }
+.tool-name a { color: var(--ink); text-decoration-color: var(--rule); }
+.tool-name a:hover { text-decoration-color: var(--dykem); }
+.tool-name small { display: block; font-weight: 500; color: var(--dykem); font-size: .8rem; margin-top: .2rem; }
+.tool-what { grid-area: what; margin: 0; }
+.tool-best { grid-area: best; margin: 0; color: var(--slate); font-size: .95rem; }
+.tool-best .k { font-weight: 600; color: var(--ink); }
+
+/* Readiness gauge: three segments in layout blue */
+.gauge { grid-area: gauge; display: inline-grid; grid-template-columns: repeat(3, 1fr); gap: 3px; align-self: start; padding-top: .35rem; width: 100%; }
+.gauge i { display: block; height: 8px; border-radius: 1px; background: var(--rule); }
+.gauge span { grid-column: 1 / -1; font-size: .8rem; font-weight: 600; color: var(--slate); margin-top: .25rem; }
+.gauge[data-level="1"] i:nth-child(-n+1),
+.gauge[data-level="2"] i:nth-child(-n+2),
+.gauge[data-level="3"] i { background: var(--dykem); }
+.gauge[data-level="3"] span { color: var(--dykem); }
+
+/* Article */
+.post { padding: clamp(2rem, 6vw, 4rem) 0 2rem; }
+.post header { max-width: 50rem; margin-bottom: 2.4rem; padding-bottom: 2rem; border-bottom: 3px solid var(--dykem); }
+.post h1, .archive h1 { font-size: var(--step-3); line-height: 1.06; margin: .4rem 0 0; font-weight: 800; font-variation-settings: 'wdth' 118; text-wrap: balance; }
+.prose { max-width: var(--measure); }
+.prose h2 { font-size: var(--step-2); line-height: 1.2; margin: 2.4rem 0 .7rem; font-weight: 750; font-variation-settings: 'wdth' 112; }
+.prose h3 { font-size: var(--step-1); margin: 1.8rem 0 .5rem; }
+.prose p, .prose li { margin: 0 0 1.05rem; }
+.prose ul, .prose ol { padding-left: 1.3rem; }
+.prose blockquote { margin: 1.5rem 0; padding-left: 1.2rem; border-left: 3px solid var(--dykem); color: var(--slate); }
+.prose code { background: var(--paper-2); padding: .1em .35em; border-radius: 3px; font-size: .92em; }
+.tags { color: var(--slate); font-size: var(--step--1); margin-top: 2rem; }
+.pager { display: flex; justify-content: space-between; gap: 1.5rem; margin-top: 2.5rem; padding-top: 1.2rem; border-top: 1px solid var(--rule); font-weight: 600; }
+.pager a:last-child { text-align: right; }
+
+.archive { padding: clamp(2rem, 6vw, 4rem) 0 3rem; }
+
+/* Footer */
+.foot { border-top: 1px solid var(--rule); padding-top: 1.6rem; padding-bottom: 3rem; margin-top: 2rem; color: var(--slate); font-size: .92rem; }
+.foot p { margin: 0 0 .4rem; max-width: var(--measure); }
+
+@media (max-width: 860px) {
+  .crib { grid-template-columns: 1fr; gap: 1.2rem; }
+  .crib-head { position: static; }
+}
+@media (max-width: 560px) {
+  .tools li { grid-template-columns: minmax(0, 1fr) 6rem; grid-template-areas: "name gauge" "what what" "best best"; gap: .4rem 1rem; }
+  .pager { flex-direction: column; }
+  .pager a:last-child { text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }

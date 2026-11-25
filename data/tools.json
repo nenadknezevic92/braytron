@@ -1,0 +1,231 @@
+{
+  "updated": "2026-11-25",
+  "categories": [
+    {
+      "id": "text-to-3d",
+      "name": "Text and image to 3D",
+      "intro": "Prompt or photo in, textured mesh out. Good for concepts, games, visualisation and hobby printing. Not dimensioned engineering geometry."
+    },
+    {
+      "id": "ai-cad",
+      "name": "Text and sketch to CAD",
+      "intro": "Tools that aim for real, measurable solids you can edit and export as STEP. Still early: useful for concepts and simple parts."
+    },
+    {
+      "id": "scan",
+      "name": "Scanning and scan to CAD",
+      "intro": "Capture real objects with a phone or scanner, then turn the mesh into something an engineer can work with."
+    },
+    {
+      "id": "cam",
+      "name": "CAM and machining",
+      "intro": "AI that recognises features, picks tools and drafts toolpaths. Every one of these keeps a programmer in the loop."
+    },
+    {
+      "id": "simulation",
+      "name": "Simulation and physics AI",
+      "intro": "Surrogate models trained on CFD and FEA results that predict performance in seconds instead of hours."
+    }
+  ],
+  "tools": [
+    {
+      "name": "Tripo AI",
+      "category": "text-to-3d",
+      "url": "https://www.tripo3d.ai",
+      "what": "Text and image to 3D model generator, often ranked first in 2026 comparisons for detail and print-ready output.",
+      "bestFor": "Fast concept models and 3D printing",
+      "readiness": 2,
+      "source": "https://medium.com/ideas-with-wings/best-ai-3d-model-generators-in-2026-tripo-ai-vs-meshy-rodin-kaedim-and-more-7eea7b05eb11"
+    },
+    {
+      "name": "Meshy",
+      "category": "text-to-3d",
+      "url": "https://www.meshy.ai",
+      "what": "Self-serve 3D generator with PBR textures, rigging, low-poly tools and printing workflows.",
+      "bestFor": "All-round creative pipeline",
+      "readiness": 2,
+      "source": "https://all3dp.com/2/ai-generated-3d-model-best-tools/"
+    },
+    {
+      "name": "Hyper3D Rodin",
+      "category": "text-to-3d",
+      "url": "https://hyper3d.ai",
+      "what": "High-fidelity native 3D generation, top of several hands-on tests this year.",
+      "bestFor": "Highest visual quality",
+      "readiness": 2,
+      "source": "https://www.indiehackers.com/post/best-ai-3d-model-generator-in-2026-i-tested-9-of-the-best-and-here-is-what-i-found-70ecab1a0a"
+    },
+    {
+      "name": "Tencent Hunyuan3D",
+      "category": "text-to-3d",
+      "url": "https://3d.hunyuan.tencent.com",
+      "what": "Open-weight 3D generation model, widely named the best free option in 2026.",
+      "bestFor": "Free and self-hosted generation",
+      "readiness": 2,
+      "source": "https://www.krea.ai/blog/best-ai-3d-model-generators-2026"
+    },
+    {
+      "name": "Microsoft TRELLIS.2",
+      "category": "text-to-3d",
+      "url": "https://github.com/microsoft/TRELLIS",
+      "what": "Research model from Microsoft for structured 3D generation; one to watch rather than a finished product.",
+      "bestFor": "Researchers and developers",
+      "readiness": 1,
+      "source": "https://medium.com/ideas-with-wings/best-ai-3d-model-generators-in-2026-tripo-ai-vs-meshy-rodin-kaedim-and-more-7eea7b05eb11"
+    },
+    {
+      "name": "Kaedim",
+      "category": "text-to-3d",
+      "url": "https://www.kaedim3d.com",
+      "what": "AI generation combined with human quality checks before delivery.",
+      "bestFor": "Studios that need guaranteed quality",
+      "readiness": 3,
+      "source": "https://medium.com/ideas-with-wings/best-ai-3d-model-generators-in-2026-tripo-ai-vs-meshy-rodin-kaedim-and-more-7eea7b05eb11"
+    },
+    {
+      "name": "Zoo",
+      "category": "ai-cad",
+      "url": "https://zoo.dev",
+      "what": "CAD platform with text-to-CAD that produces editable B-rep solids instead of meshes.",
+      "bestFor": "Simple mechanical parts as STEP",
+      "readiness": 2,
+      "source": "https://www.myarchitectai.com/blog/ai-cad"
+    },
+    {
+      "name": "Adam",
+      "category": "ai-cad",
+      "url": "https://adamcad.com",
+      "what": "Text to 3D with part editing and parameters; quick parametric concept models.",
+      "bestFor": "Prototypes and quick concepts",
+      "readiness": 2,
+      "source": "https://www.rapiddirect.com/blog/best-ai-cad-tools-review/"
+    },
+    {
+      "name": "Autodesk Fusion AI features",
+      "category": "ai-cad",
+      "url": "https://www.autodesk.com/products/fusion-360/overview",
+      "what": "AI assistance built into Fusion, named alongside Zoo as the most useful text-to-CAD option for engineers.",
+      "bestFor": "Teams already working in Fusion",
+      "readiness": 2,
+      "source": "https://www.getleo.ai/blog/best-text-to-cad-tools-2026"
+    },
+    {
+      "name": "Luxxo CAD",
+      "category": "ai-cad",
+      "url": "https://luxxo.sk/ai-cad/",
+      "what": "Turns text descriptions and sketches into 3D CAD models; free web app and Android app.",
+      "bestFor": "Trying text and sketch to CAD for free",
+      "readiness": 1,
+      "publisher": true,
+      "source": "https://cad.luxxo.sk"
+    },
+    {
+      "name": "Backflip AI",
+      "category": "scan",
+      "url": "https://www.backflip.ai",
+      "what": "Converts 3D scans and STL meshes into parametric CAD with a feature tree; web app, Fusion add-in and SOLIDWORKS plugin.",
+      "bestFor": "Reverse engineering worn or legacy parts",
+      "readiness": 2,
+      "source": "https://www.engineering.com/backflips-back-is-the-mesh-to-cad-ai-real-this-time/"
+    },
+    {
+      "name": "KIRI Engine",
+      "category": "scan",
+      "url": "https://www.kiriengine.app",
+      "what": "Photo and LiDAR scanning with Gaussian splatting; one of the few scan apps on both iOS and Android.",
+      "bestFor": "Phone scanning on Android",
+      "readiness": 3,
+      "source": "https://www.lilachbullock.com/?p=190801"
+    },
+    {
+      "name": "Scaniverse",
+      "category": "scan",
+      "url": "https://scaniverse.com",
+      "what": "Free, unlimited Gaussian splatting processed on the phone itself.",
+      "bestFor": "Free realistic captures",
+      "readiness": 3,
+      "source": "https://apps.apple.com/us/app/scaniverse-lidar-3d-scanner/id1541433223"
+    },
+    {
+      "name": "Polycam",
+      "category": "scan",
+      "url": "https://poly.cam",
+      "what": "Photogrammetry, LiDAR and Gaussian splatting in one app, updated frequently.",
+      "bestFor": "Spaces and objects on iPhone",
+      "readiness": 3,
+      "source": "https://beforesandafters.com/2024/07/02/comparing-the-top-5-3d-scanner-apps/"
+    },
+    {
+      "name": "CloudNC CAM Assist",
+      "category": "cam",
+      "url": "https://www.cloudnc.com",
+      "what": "Generates machining strategies for 3 and 3+2 axis parts; used by over 1,000 shops, works in Fusion, Mastercam, NX and GibbsCAM.",
+      "bestFor": "Job shops cutting programming time",
+      "readiness": 3,
+      "source": "https://www.cloudnc.com/news-room/cam-assist-now-used-by-over-1-000-machine-shops-globally-to-accelerate-cnc-programming-with-ai"
+    },
+    {
+      "name": "Siemens NX X Manufacturing Copilot",
+      "category": "cam",
+      "url": "https://blogs.sw.siemens.com/nx-manufacturing/how-ai-powered-cam-software-is-transforming-cnc-machining",
+      "what": "Chat assistant inside NX CAM that suggests operations, tools and parameters for selected features.",
+      "bestFor": "NX CAM programmers",
+      "readiness": 2,
+      "source": "https://blogs.sw.siemens.com/nx-manufacturing/when-ai-becomes-your-cam-programming-partner/"
+    },
+    {
+      "name": "Manukai",
+      "category": "cam",
+      "url": "https://www.siemens.com/en-us/products/manukai-your-ai-copilot-for-cam-programming/",
+      "what": "CAM copilot that learns from a shop's past programs to automate recurring tasks and standardise tooling.",
+      "bestFor": "Shops with a large program history",
+      "readiness": 2,
+      "source": "https://www.siemens.com/en-us/products/manukai-your-ai-copilot-for-cam-programming/"
+    },
+    {
+      "name": "Limitless Labs CAM Agent",
+      "category": "cam",
+      "url": "https://www.designnews.com/artificial-intelligence/ai-tools-for-engineers-limitless-labs-cam-agent",
+      "what": "Agent that takes a CAD file, identifies features, picks tools, sequences operations and drafts a CNC program.",
+      "bestFor": "Watching where CAM automation is heading",
+      "readiness": 1,
+      "source": "https://www.designnews.com/artificial-intelligence/ai-tools-for-engineers-limitless-labs-cam-agent"
+    },
+    {
+      "name": "PhysicsX",
+      "category": "simulation",
+      "url": "https://www.physicsx.ai",
+      "what": "Deep-learning surrogates trained on CFD and FEA that return near-instant predictions, at up to 100,000 simulations a day.",
+      "bestFor": "Large design-space exploration",
+      "readiness": 3,
+      "source": "https://blogs.sw.siemens.com/podcasts/engineer-innovation/100000-simulations-a-day-ai-powered-simulation-with-physicsx/"
+    },
+    {
+      "name": "Neural Concept",
+      "category": "simulation",
+      "url": "https://www.neuralconcept.com",
+      "what": "Physics AI used in automotive design, including at Jaguar Land Rover.",
+      "bestFor": "Automotive and aerospace teams",
+      "readiness": 3,
+      "source": "https://spectrum.ieee.org/large-physics-models-design-engineering"
+    },
+    {
+      "name": "Simcenter PhysicsAI",
+      "category": "simulation",
+      "url": "https://www.siemens.com/fi-fi/products/simcenter/engineering-data-science-ai/physicsai/",
+      "what": "No-code surrogate models that predict KPIs directly on mesh or CAD, trained on your own simulation history.",
+      "bestFor": "Simcenter users with past results",
+      "readiness": 3,
+      "source": "https://www.siemens.com/fi-fi/products/simcenter/engineering-data-science-ai/physicsai/"
+    },
+    {
+      "name": "NVIDIA PhysicsNeMo",
+      "category": "simulation",
+      "url": "https://developer.nvidia.com/physicsnemo",
+      "what": "Open-source framework for building physics-ML surrogate models.",
+      "bestFor": "Developers building their own surrogates",
+      "readiness": 2,
+      "source": "https://developer.nvidia.com/blog/ai-powered-simulation-tools-for-surrogate-modeling-engineering-workflows-with-siml-ai-and-nvidia-modulus/"
+    }
+  ]
+}
