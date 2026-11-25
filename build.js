@@ -7,8 +7,8 @@ const path = require('path');
 const SITE = {
   url: 'https://braytron.cz',
   name: 'Braytron',
-  tagline: 'AI tools for 3D and manufacturing',
-  description: 'A curated, regularly updated guide to the AI tools that matter for 3D modelling, CAD, scanning, CAM and engineering simulation.',
+  tagline: 'Which AI will replace Creo and AutoCAD?',
+  description: 'Weekly tracker of AI CAD tools racing to replace Creo and AutoCAD: parts, feature trees, assemblies, drawings and consistency, scored with sources.',
   publisher: 'Luxxo s. r. o.',
   publisherUrl: 'https://luxxo.sk',
   lang: 'en'
@@ -136,12 +136,50 @@ function loadBenchmark() {
   return b;
 }
 
+function loadTracker() {
+  const t = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'tracker.json'), 'utf8'));
+  const caps = t.capabilities.map(c => c.id);
+  t.candidates.forEach(c => {
+    for (const id of caps) {
+      const cell = c.cells[id];
+      if (!cell) fail(`tracker.json ${c.name}: missing capability "${id}"`);
+      else if (!t.statuses[cell.status]) fail(`tracker.json ${c.name}/${id}: unknown status "${cell.status}"`);
+      else if ((cell.status === 'yes' || cell.status === 'partial') && !cell.source && !(cell.note && /^Text and sketch/.test(cell.note))) fail(`tracker.json ${c.name}/${id}: "${cell.status}" needs a source`);
+    }
+    c.points = caps.reduce((s, id) => s + (c.cells[id] ? t.statuses[c.cells[id].status].points : 0), 0);
+  });
+  t.max = caps.length * 2;
+  t.candidates.sort((a, b) => b.points - a.points);
+  return t;
+}
+
+function trackerTable(t) {
+  const mark = (cell) => {
+    const st = t.statuses[cell.status];
+    const inner = `<span class="mk mk-${cell.status}" aria-hidden="true"></span><span class="st">${esc(st.label)}</span>${cell.note ? `<span class="nt">${esc(cell.note)}</span>` : ''}`;
+    return cell.source ? `<a class="cellk" href="${esc(cell.source)}" rel="noopener">${inner}</a>` : `<span class="cellk">${inner}</span>`;
+  };
+  return `
+<div class="track-wrap" tabindex="0" role="region" aria-label="Replacement tracker table">
+<table class="track">
+  <thead><tr><th scope="col" class="c-tool">Contender</th><th scope="col" class="c-score">Score</th>${t.capabilities.map(c => `<th scope="col" title="${esc(c.why)}">${esc(c.name)}</th>`).join('')}</tr></thead>
+  <tbody>${t.candidates.map(c => `
+    <tr${c.publisher ? ' class="own"' : ''}>
+      <th scope="row" class="c-tool"><a href="${esc(c.url)}"${c.publisher ? '' : ' rel="noopener"'}>${esc(c.name)}</a>${c.publisher ? '<small>From our publisher</small>' : ''}</th>
+      <td class="c-score"><span class="score"><b>${c.points}</b>/${t.max}</span><span class="bar"><i style="width:${Math.round(c.points / t.max * 100)}%"></i></span></td>
+      ${t.capabilities.map(cap => `<td>${mark(c.cells[cap.id])}</td>`).join('')}
+    </tr>`).join('')}
+  </tbody>
+</table>
+</div>`;
+}
+
 let SHOW_BENCHMARK = false;
 
 // ---------- templates ----------
 function layout({ title, description, canonical, body, jsonld, type = 'website', current = '', noindex = false }) {
   const fullTitle = title ? `${title} | ${SITE.name}` : `${SITE.name}: ${SITE.tagline}`;
-  const navItems = [['/', 'Shortlist', 'home'], ['/news/', 'News', 'news']];
+  const navItems = [['/', 'Tracker', 'home'], ['/news/', 'News', 'news']];
   if (SHOW_BENCHMARK) navItems.push(['/benchmark/', 'Benchmark', 'benchmark']);
   navItems.push(['/about/', 'About', 'about']);
   const nav = navItems
@@ -179,7 +217,7 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
 ${body}
 </main>
 <footer class="foot">
-  <p>Braytron is an independent guide to AI tools for 3D and manufacturing, updated every week.</p>
+  <p>Braytron tracks which AI will be the first to replace Creo and AutoCAD, updated every week.</p>
   <p>Published by <a href="${SITE.publisherUrl}">${SITE.publisher}</a>, Bratislava. Makers of <a href="https://luxxo.sk/ai-cad/">Luxxo CAD</a>.</p>
   <p><a href="/feed.xml">RSS feed</a> · <a href="/about/">How we rate tools</a></p>
 </footer>
@@ -276,6 +314,7 @@ function build() {
   const posts = loadPosts();
   const tools = loadTools();
   const bench = loadBenchmark();
+  const tracker = loadTracker();
   SHOW_BENCHMARK = bench.results.length > 0;
   if (errors.length) {
     console.error('Build failed:\n- ' + errors.join('\n- '));
@@ -285,10 +324,24 @@ function build() {
   fs.mkdirSync(DIST, { recursive: true });
 
   const latest = posts[0];
+  const leader = tracker.candidates[0];
   const home = `
 <section class="hero">
-  <h1>AI tools that help you make real parts.</h1>
-  <p class="lede">${tools.tools.length} tools for 3D modelling, CAD, scanning, CAM and simulation, rated by how ready they are for engineering work. Checked and updated every week.</p>
+  <h1>Which AI will replace Creo and AutoCAD first?</h1>
+  <p class="lede">We test every serious contender against the six things a real CAD replacement has to do, and update the scores every week.</p>
+</section>
+<section class="tracker" id="tracker" aria-labelledby="h-tracker">
+  <div class="verdict">
+    <h2 id="h-tracker" class="section-title">Today: no AI does all six</h2>
+    <p>The closest is <strong>${esc(leader.name)}</strong> with ${leader.points} of ${tracker.max} points. The pieces exist, but in different tools: parts in one, drawings in another, existing models in a third. The first tool that combines them reliably wins. Updated ${fmtDate(tracker.updated)}.</p>
+  </div>
+  ${trackerTable(tracker)}
+  <p class="legend">Scoring: Yes = 2 points, Partly = 1, everything else 0. Every Yes and Partly links to its source. Consistency is only scored from our own <a href="/about/#tracker">hands-on tests</a>.</p>
+  <dl class="caps">${tracker.capabilities.map(c => `<div><dt>${esc(c.name)}</dt><dd>${esc(c.why)}</dd></div>`).join('')}</dl>
+</section>
+<section class="incumbents" aria-labelledby="h-inc">
+  <h2 id="h-inc" class="section-title">What Creo and AutoCAD are doing about it</h2>
+  <div class="inc-grid">${tracker.incumbents.map(i => `<div><h3>${esc(i.name)}</h3><p>${esc(i.text)} <a href="${esc(i.source)}" rel="noopener">Source</a></p></div>`).join('')}</div>
 </section>
 ${latest ? `
 <section class="lead" aria-labelledby="h-latest">
@@ -303,8 +356,8 @@ ${latest ? `
 </section>` : ''}
 <section class="shortlist" id="shortlist" aria-labelledby="h-shortlist">
   <div class="shortlist-head">
-    <h2 id="h-shortlist" class="section-title">The shortlist</h2>
-    <p>Updated ${fmtDate(tools.updated)}. Readiness: <strong>Early</strong> means promising but rough, <strong>Usable</strong> means it saves time with checking, <strong>Proven</strong> means teams rely on it in production.</p>
+    <h2 id="h-shortlist" class="section-title">Every tool we watch</h2>
+    <p>The wider field of ${tools.tools.length} AI tools for 3D, scanning, CAM and simulation. Updated ${fmtDate(tools.updated)}. Readiness: <strong>Early</strong> means promising but rough, <strong>Usable</strong> means it saves time with checking, <strong>Proven</strong> means teams rely on it in production.</p>
   </div>
   ${shortlist(tools)}
 </section>`;
@@ -313,7 +366,7 @@ ${latest ? `
     title: '', description: SITE.description, canonical: '/', body: home, current: 'home',
     jsonld: [
       { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: SITE.url, description: SITE.description, publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.publisherUrl } },
-      { '@context': 'https://schema.org', '@type': 'ItemList', name: 'AI tools for 3D and manufacturing', itemListElement: tools.tools.map((t, i) => ({ '@type': 'ListItem', position: i + 1, name: t.name, url: t.url })) }
+      { '@context': 'https://schema.org', '@type': 'ItemList', name: 'AI contenders to replace Creo and AutoCAD', itemListElement: tracker.candidates.map((t, i) => ({ '@type': 'ListItem', position: i + 1, name: t.name, url: t.url })) }
     ]
   }));
 
@@ -346,22 +399,29 @@ ${latest ? `
   }
 
   write('about/index.html', layout({
-    title: 'About', description: 'How Braytron selects and rates AI tools for 3D and manufacturing.', canonical: '/about/', current: 'about',
+    title: 'About', description: 'How Braytron scores AI tools on their way to replacing Creo and AutoCAD.', canonical: '/about/', current: 'about',
     body: `
 <article class="post">
-  <header><h1>About Braytron</h1><p class="lede">A short, opinionated guide for engineers who want to know which AI tools are worth their time.</p></header>
+  <header><h1>About Braytron</h1><p class="lede">One question, tracked every week: which AI tool will be the first to reliably replace Creo or AutoCAD for real engineering work?</p></header>
   <div class="prose">
-    <p>The AI tool market for 3D and manufacturing moves every week, and most lists mix toys with production software. Braytron keeps a short list instead: the tools that matter in each area, with a plain rating of how ready they are.</p>
-    <h2 id="ratings">How we rate tools</h2>
+    <p>AI can already sketch a bracket from a sentence. That is not the same as replacing the CAD system an engineering department runs on. Braytron checks every serious contender against the six things a replacement has to do, links every claim to its source, and tests the tools on real parts.</p>
+    <h2 id="tracker">How the tracker scores</h2>
+    <ul>
+      <li><strong>Yes (2 points)</strong>: the capability is shipped and documented by the vendor or shown in an independent test.</li>
+      <li><strong>Partly (1 point)</strong>: it exists but with clear limits, or only for some users.</li>
+      <li><strong>Planned, Not verified, No (0 points)</strong>: announced but not shipped, no evidence found yet, or not offered.</li>
+      <li><strong>Consistency</strong> is scored only from our own benchmark: five ordinary engineering parts with exact dimensions, the same prompt in every tool.</li>
+    </ul>
+    <h2 id="ratings">How we rate the wider tool list</h2>
     <ul>
       <li><strong>Early</strong>: research projects, betas and new launches. Worth watching, not worth depending on.</li>
       <li><strong>Usable</strong>: saves real time, but the output needs an engineer to check it.</li>
       <li><strong>Proven</strong>: used in production by many teams, with a track record.</li>
     </ul>
     <h2 id="process">How it is updated</h2>
-    <p>New articles are researched and drafted with the help of AI, from public sources that are linked in every article. Each claim links to where it came from, so you can check it yourself.</p>
+    <p>Every week new launches and updates are researched from public sources, with the help of AI, and the tracker is updated when something moves. Each claim links to where it came from, so you can check it yourself. The hands-on benchmark tests are run by a mechanical engineer with 17 years of design experience.</p>
     <h2 id="publisher">Who is behind it</h2>
-    <p>Braytron is published by <a href="${SITE.publisherUrl}">${SITE.publisher}</a> in Bratislava, Slovakia. We also make <a href="https://luxxo.sk/ai-cad/">Luxxo CAD</a>, which appears on the shortlist and is always marked as ours. Corrections and tool suggestions: <a href="mailto:info@luxxo.sk">info@luxxo.sk</a>.</p>
+    <p>Braytron is published by <a href="${SITE.publisherUrl}">${SITE.publisher}</a> in Bratislava, Slovakia. We also make <a href="https://luxxo.sk/ai-cad/">Luxxo CAD</a>, which appears in the tracker and is always marked as ours and scored by the same rules. Corrections and tool suggestions: <a href="mailto:info@luxxo.sk">info@luxxo.sk</a>.</p>
   </div>
 </article>`
   }));

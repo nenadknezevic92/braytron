@@ -57,6 +57,46 @@ main, .masthead, .foot { max-width: 1160px; margin: 0 auto; padding-left: clamp(
 }
 .lede { font-size: var(--step-1); line-height: 1.45; color: var(--slate); max-width: 46ch; margin: 1.4rem 0 0; }
 
+/* Replacement tracker: the core of the site */
+.tracker { padding: clamp(2rem, 5vw, 3.5rem) 0 1rem; }
+.verdict p { max-width: var(--measure); margin: 0 0 1.6rem; font-size: var(--step-1); line-height: 1.45; color: var(--slate); }
+.verdict strong { color: var(--ink); }
+.track-wrap { overflow-x: auto; margin: 0 calc(-1 * clamp(1.1rem, 4vw, 2.5rem)); padding: 0 clamp(1.1rem, 4vw, 2.5rem); }
+.track-wrap:focus-visible { outline-offset: -3px; }
+.track { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 980px; font-size: .9rem; }
+.track th, .track td { text-align: left; vertical-align: top; padding: .8rem .7rem; border-bottom: 1px solid var(--rule); }
+.track thead th { font-weight: 650; line-height: 1.25; border-bottom: 2px solid var(--ink); font-size: .88rem; }
+.track .c-tool { position: sticky; left: 0; background: var(--paper); z-index: 1; width: 11.5rem; min-width: 11.5rem; box-shadow: 1px 0 0 var(--rule); }
+.track tbody .c-tool { font-weight: 700; font-size: .98rem; line-height: 1.25; }
+.track tbody .c-tool a { color: var(--ink); text-decoration-color: var(--rule); }
+.track tbody .c-tool small { display: block; color: var(--dykem); font-weight: 500; font-size: .78rem; margin-top: .2rem; }
+.track tr.own td, .track tr.own .c-tool { background: var(--dykem-wash); }
+.cellk { display: grid; grid-template-columns: 14px 1fr; column-gap: .45rem; color: var(--ink); text-decoration: none; }
+a.cellk:hover .st { text-decoration: underline; text-decoration-color: var(--dykem); }
+.st { font-weight: 600; }
+.nt { grid-column: 2; color: var(--slate); font-size: .8rem; line-height: 1.35; margin-top: .15rem; }
+.mk { width: 14px; height: 14px; border-radius: 2px; margin-top: .15rem; border: 2px solid var(--rule); }
+.mk-yes { background: var(--dykem); border-color: var(--dykem); }
+.mk-partial { border-color: var(--dykem); background: linear-gradient(135deg, var(--dykem) 50%, transparent 50%); }
+.mk-planned { border-style: dashed; border-color: var(--slate); }
+.mk-no { border-color: var(--slate); background: linear-gradient(45deg, transparent 44%, var(--slate) 44% 56%, transparent 56%); }
+
+td:has(.mk-unverified) .st, td:has(.mk-untested) .st, td:has(.mk-no) .st { color: var(--slate); font-weight: 500; }
+.c-score { width: 7rem; min-width: 7rem; }
+.score { font-variant-numeric: tabular-nums; color: var(--slate); }
+.score b { font-size: 1.35rem; color: var(--ink); font-variation-settings: 'wdth' 118; }
+.bar { display: block; height: 6px; background: var(--rule); border-radius: 1px; margin-top: .35rem; }
+.bar i { display: block; height: 100%; background: var(--dykem); border-radius: 1px; }
+.legend { color: var(--slate); font-size: .9rem; max-width: var(--measure); margin: 1rem 0 2rem; }
+.caps { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 1rem 2.4rem; margin: 0; padding: 1.6rem 0 0; border-top: 1px solid var(--rule); }
+.caps dt { font-weight: 700; }
+.caps dd { margin: .2rem 0 0; color: var(--slate); font-size: .95rem; }
+
+.incumbents { padding: clamp(2rem, 5vw, 3rem) 0; border-top: 2px solid var(--ink); }
+.inc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 1.2rem 3rem; }
+.inc-grid h3 { margin: 0 0 .4rem; font-size: var(--step-1); font-variation-settings: 'wdth' 112; }
+.inc-grid p { margin: 0; max-width: var(--measure); }
+
 .section-title { font-size: var(--step-2); font-weight: 750; font-variation-settings: 'wdth' 118; margin: 0 0 1.2rem; line-height: 1.15; }
 
 /* Latest */
@@ -154,3 +194,9 @@ time { color: var(--slate); font-size: var(--step--1); font-weight: 500; }
   .pager a:last-child { text-align: left; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+@media (max-width: 600px) {
+  .track .c-tool { width: 8.2rem; min-width: 8.2rem; }
+  .track tbody .c-tool { font-size: .9rem; }
+  .c-score { width: 5rem; min-width: 5rem; }
+  .track { min-width: 900px; }
+}
