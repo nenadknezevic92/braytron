@@ -8,11 +8,16 @@ This file tells the scheduled agent how to add a news article to braytron.cz. Fo
 - Language: English. Plain, practical, no hype.
 - Articles live in `content/posts/YYYY-MM-DD-slug.md`. The tool shortlist lives in `data/tools.json`.
 
+## Cadence and quality bar
+The agent runs once a week and publishes exactly one article. One strong, well-sourced article a week is the goal; volume is not. Each article must give the reader something they can use (a decision, a comparison, a practical takeaway), not just restate press releases.
+
+Do not edit `data/benchmark.json`. Benchmark results are entered only from tests the site owner ran himself.
+
 ## Each run
 1. Read the 5 newest files in `content/posts/` so you don't repeat a topic or a story.
 2. Research news from roughly the last 7 days with web search (several searches, one per area: text-to-3D, AI CAD, scan-to-CAD, AI CAM, simulation/physics AI, additive manufacturing AI). Prefer original sources: company announcements, trade press (engineering.com, develop3d, 3dprint.com, Design News, MMS, All3DP, TCT, VoxelMatters), research papers.
 3. Pick ONE angle worth reading: a significant launch, a clear trend across several announcements, or a practical comparison. If nothing new and significant happened, write a practical how-to or comparison about tools on the shortlist instead. Never invent news.
-4. Write the article (500 to 900 words) in this format:
+4. Write the article (700 to 1,100 words). End it with a short "What this means in practice" section written for a working engineer. If the benchmark page has results relevant to the topic, link to `/benchmark/`. Format:
 
 ```
 ---

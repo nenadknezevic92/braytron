@@ -1,0 +1,41 @@
+{
+  "title": "AI CAD benchmark",
+  "round": 1,
+  "status": "First round in progress. Results will be published as each tool is tested.",
+  "criteria": [
+    { "id": "geometry", "name": "Geometry", "desc": "Shape and features match the prompt: right number of holes, steps, teeth and so on." },
+    { "id": "dimensions", "name": "Dimensions", "desc": "Measured sizes within ±0.5 mm of the prompt." },
+    { "id": "editable", "name": "Editable", "desc": "Output is a solid with features or parameters you can change, not only a mesh." },
+    { "id": "export", "name": "Export", "desc": "Exports a clean STEP that opens without repair in a standard CAD system." }
+  ],
+  "scale": "Each criterion scores 0 (fails), 1 (partly) or 2 (meets it). Maximum 8 points per test, 40 per tool.",
+  "tests": [
+    {
+      "id": "flange",
+      "name": "Bolted flange",
+      "prompt": "Round flange, outer diameter 120 mm, thickness 12 mm, centre bore 50 mm, six Ø9 mm holes equally spaced on a 95 mm pitch circle."
+    },
+    {
+      "id": "bracket",
+      "name": "L‑bracket",
+      "prompt": "L-shaped bracket from 5 mm plate, legs 80 mm and 60 mm long, 40 mm wide, inner bend radius 5 mm, two Ø6.5 mm holes in each leg, centres 15 mm from the edges."
+    },
+    {
+      "id": "enclosure",
+      "name": "Electronics enclosure",
+      "prompt": "Rectangular enclosure 100 × 60 × 35 mm outside, 2 mm walls, open top, four internal Ø7 mm screw bosses for M3 in the corners, 3 mm fillets on the vertical outside edges."
+    },
+    {
+      "id": "shaft",
+      "name": "Stepped shaft with keyway",
+      "prompt": "Stepped shaft 150 mm long: Ø20 × 40 mm, Ø25 × 70 mm, Ø20 × 40 mm, 1 × 45° chamfers on both ends, keyway 6 mm wide, 3.5 mm deep and 40 mm long, centred on the Ø25 section."
+    },
+    {
+      "id": "gear",
+      "name": "Spur gear",
+      "prompt": "Spur gear, module 2, 30 teeth, 20° pressure angle, face width 15 mm, Ø12 mm bore with a 4 mm keyway."
+    }
+  ],
+  "tools": ["Zoo", "Adam", "Autodesk Fusion AI features", "Luxxo CAD"],
+  "results": []
+}

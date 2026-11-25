@@ -124,6 +124,20 @@ time { color: var(--slate); font-size: var(--step--1); font-weight: 500; }
 .pager { display: flex; justify-content: space-between; gap: 1.5rem; margin-top: 2.5rem; padding-top: 1.2rem; border-top: 1px solid var(--rule); font-weight: 600; }
 .pager a:last-child { text-align: right; }
 
+/* Benchmark */
+.status { padding: 1rem 1.2rem; background: var(--dykem-wash); border-left: 3px solid var(--dykem); border-radius: 0 4px 4px 0; }
+.table-wrap { overflow-x: auto; margin: 1rem 0 2rem; }
+.bench { border-collapse: collapse; width: 100%; min-width: 640px; font-size: .95rem; font-variant-numeric: tabular-nums; }
+.bench th, .bench td { text-align: left; padding: .6rem .7rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.bench thead th { border-bottom: 2px solid var(--ink); font-weight: 650; }
+.bench tbody th { font-weight: 650; }
+.bench small { color: var(--slate); }
+.bench .na { color: var(--slate); font-size: .85rem; }
+.bench-note { margin: 0 0 1.4rem; }
+.bench-note img { display: block; max-width: 100%; height: auto; border-radius: 4px; margin-bottom: .5rem; border: 1px solid var(--rule); }
+.tests li { margin-bottom: 1rem; }
+.prose { overflow-wrap: break-word; }
+
 .archive { padding: clamp(2rem, 6vw, 4rem) 0 3rem; }
 
 /* Footer */

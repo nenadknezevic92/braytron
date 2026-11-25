@@ -124,10 +124,27 @@ function loadTools() {
   return data;
 }
 
+function loadBenchmark() {
+  const b = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'benchmark.json'), 'utf8'));
+  const tests = new Set(b.tests.map(t => t.id));
+  const crit = b.criteria.map(c => c.id);
+  b.results.forEach((r, i) => {
+    if (!b.tools.includes(r.tool)) fail(`benchmark.json result #${i}: tool "${r.tool}" not in tools list`);
+    if (!tests.has(r.test)) fail(`benchmark.json result #${i}: unknown test "${r.test}"`);
+    for (const c of crit) if (![0, 1, 2].includes(r.scores && r.scores[c])) fail(`benchmark.json result #${i}: score "${c}" must be 0, 1 or 2`);
+  });
+  return b;
+}
+
+let SHOW_BENCHMARK = false;
+
 // ---------- templates ----------
-function layout({ title, description, canonical, body, jsonld, type = 'website', current = '' }) {
+function layout({ title, description, canonical, body, jsonld, type = 'website', current = '', noindex = false }) {
   const fullTitle = title ? `${title} | ${SITE.name}` : `${SITE.name}: ${SITE.tagline}`;
-  const nav = [['/', 'Shortlist', 'home'], ['/news/', 'News', 'news'], ['/about/', 'About', 'about']]
+  const navItems = [['/', 'Shortlist', 'home'], ['/news/', 'News', 'news']];
+  if (SHOW_BENCHMARK) navItems.push(['/benchmark/', 'Benchmark', 'benchmark']);
+  navItems.push(['/about/', 'About', 'about']);
+  const nav = navItems
     .map(([href, label, key]) => `<a href="${href}"${current === key ? ' aria-current="page"' : ''}>${label}</a>`).join('');
   return `<!doctype html>
 <html lang="${SITE.lang}">
@@ -136,6 +153,7 @@ function layout({ title, description, canonical, body, jsonld, type = 'website',
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(fullTitle)}</title>
 <meta name="description" content="${esc(description)}">
+${noindex ? '<meta name="robots" content="noindex">' : ''}
 <link rel="canonical" href="${SITE.url}${canonical}">
 <meta property="og:type" content="${type}">
 <meta property="og:title" content="${esc(title || SITE.name)}">
@@ -161,7 +179,7 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
 ${body}
 </main>
 <footer class="foot">
-  <p>Braytron is an independent guide to AI tools for 3D and manufacturing, updated several times a week.</p>
+  <p>Braytron is an independent guide to AI tools for 3D and manufacturing, updated every week.</p>
   <p>Published by <a href="${SITE.publisherUrl}">${SITE.publisher}</a>, Bratislava. Makers of <a href="https://luxxo.sk/ai-cad/">Luxxo CAD</a>.</p>
   <p><a href="/feed.xml">RSS feed</a> · <a href="/about/">How we rate tools</a></p>
 </footer>
@@ -202,10 +220,63 @@ function shortlist(data) {
   }).join('');
 }
 
+function benchmarkPage(b) {
+  const crit = b.criteria;
+  const max = crit.length * 2;
+  const cell = (tool, test) => b.results.find(r => r.tool === tool && r.test === test);
+  const sum = (r) => crit.reduce((s, c) => s + r.scores[c.id], 0);
+  const tested = b.tools.filter(t => b.results.some(r => r.tool === t));
+  const totals = tested.map(t => {
+    const rs = b.results.filter(r => r.tool === t);
+    return { tool: t, points: rs.reduce((s, r) => s + sum(r), 0), done: rs.length };
+  }).sort((a, x) => x.points - a.points);
+
+  const resultsTable = tested.length ? `
+  <h2 id="results">Results</h2>
+  <div class="table-wrap"><table class="bench">
+    <thead><tr><th scope="col">Tool</th>${b.tests.map(t => `<th scope="col">${esc(t.name)}</th>`).join('')}<th scope="col">Total</th></tr></thead>
+    <tbody>${totals.map(({ tool, points, done }) => `<tr><th scope="row">${esc(tool)}</th>${b.tests.map(t => { const r = cell(tool, t.id); return `<td>${r ? `${sum(r)}<small>/${max}</small>` : '<span class="na">Not yet</span>'}</td>`; }).join('')}<td><strong>${points}</strong><small>/${done * max}</small></td></tr>`).join('')}</tbody>
+  </table></div>
+  ${b.tests.map(t => {
+    const rs = b.results.filter(r => r.test === t.id);
+    if (!rs.length) return '';
+    return `<h3 id="r-${t.id}">${esc(t.name)}</h3>${rs.map(r => `
+    <div class="bench-note">
+      ${r.image ? `<img src="${esc(r.image)}" alt="${esc(r.tool)} result for the ${esc(t.name.toLowerCase())} test" loading="lazy">` : ''}
+      <p><strong>${esc(r.tool)}</strong>: ${sum(r)} of ${max}${r.timeSec ? `, ${r.timeSec} s` : ''}. ${esc(r.notes || '')}</p>
+    </div>`).join('')}`;
+  }).join('')}` : `<p class="status">${esc(b.status)}</p>`;
+
+  return layout({
+    title: b.title, canonical: '/benchmark/', current: 'benchmark', noindex: !SHOW_BENCHMARK,
+    description: 'Five real engineering parts, the same prompts, every major text-to-CAD tool. Scored by a mechanical engineer on geometry, dimensions, editability and STEP export.',
+    body: `
+<article class="post">
+  <header>
+    <h1>${esc(b.title)}, round ${b.round}</h1>
+    <p class="lede">Five ordinary engineering parts, the same prompt in every tool, scored by a mechanical engineer with 17 years of design experience.</p>
+  </header>
+  <div class="prose">
+    <p>Most text-to-CAD comparisons ask for a coffee mug. These tests ask for the parts engineers actually draw every week, with exact dimensions, and check the result in CAD.</p>
+    ${resultsTable}
+    <h2 id="tests">The five tests</h2>
+    <p>Each prompt is pasted unchanged as the first message. No follow-up corrections.</p>
+    <ol class="tests">${b.tests.map(t => `<li><strong>${esc(t.name)}</strong><br>${esc(t.prompt)}</li>`).join('')}</ol>
+    <h2 id="scoring">How each part is scored</h2>
+    <ul>${crit.map(c => `<li><strong>${esc(c.name)}</strong>: ${esc(c.desc)}</li>`).join('')}</ul>
+    <p>${esc(b.scale)}</p>
+    <p>Tools in this round: ${b.tools.map(esc).join(', ')}. Luxxo CAD is made by Braytron's publisher; it gets the same prompts and the same scoring, and we publish its results whether they are good or bad.</p>
+  </div>
+</article>`
+  });
+}
+
 // ---------- build ----------
 function build() {
   const posts = loadPosts();
   const tools = loadTools();
+  const bench = loadBenchmark();
+  SHOW_BENCHMARK = bench.results.length > 0;
   if (errors.length) {
     console.error('Build failed:\n- ' + errors.join('\n- '));
     process.exit(1);
@@ -217,7 +288,7 @@ function build() {
   const home = `
 <section class="hero">
   <h1>AI tools that help you make real parts.</h1>
-  <p class="lede">${tools.tools.length} tools for 3D modelling, CAD, scanning, CAM and simulation, rated by how ready they are for engineering work. Checked and updated several times a week.</p>
+  <p class="lede">${tools.tools.length} tools for 3D modelling, CAD, scanning, CAM and simulation, rated by how ready they are for engineering work. Checked and updated every week.</p>
 </section>
 ${latest ? `
 <section class="lead" aria-labelledby="h-latest">
@@ -295,6 +366,8 @@ ${latest ? `
 </article>`
   }));
 
+  write('benchmark/index.html', benchmarkPage(bench));
+
   write('404.html', layout({ title: 'Page not found', description: 'This page does not exist.', canonical: '/404.html', body: `<section class="archive"><h1>Page not found</h1><p>The page may have moved. Go to the <a href="/">shortlist</a> or browse the <a href="/news/">news</a>.</p></section>` }));
 
   // RSS
@@ -303,11 +376,12 @@ ${latest ? `
 
   // Sitemap
   const urls = [['/', posts[0] ? posts[0].date : tools.updated], ['/news/', posts[0] ? posts[0].date : tools.updated], ['/about/', tools.updated], ...posts.map(p => [p.url, p.date])];
+  if (SHOW_BENCHMARK) urls.push(['/benchmark/', bench.results.map(r => r.date || tools.updated).sort().pop()]);
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(([u, d]) => `<url><loc>${SITE.url}${u}</loc><lastmod>${d}</lastmod></url>`).join('')}</urlset>`);
   write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${SITE.url}/sitemap.xml\n`);
 
   // Static files
-  for (const f of fs.readdirSync(path.join(ROOT, 'static'))) fs.copyFileSync(path.join(ROOT, 'static', f), path.join(DIST, f));
+  fs.cpSync(path.join(ROOT, 'static'), DIST, { recursive: true });
 
   console.log(`Built ${posts.length} posts, ${tools.tools.length} tools into dist/`);
 }
