@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-25",
+  "updated": "2026-11-26",
   "categories": [
     {
       "id": "text-to-3d",
@@ -118,6 +118,15 @@
       "readiness": 1,
       "publisher": true,
       "source": "https://cad.luxxo.sk"
+    },
+    {
+      "name": "SolidCraft",
+      "category": "ai-cad",
+      "url": "https://github.com/tangency-labs/solidcraft",
+      "what": "Open-source parametric CAD with a feature timeline, assemblies and an MCP server so AI agents can model with the same commands a person uses.",
+      "bestFor": "Trying an AI agent on a real parametric kernel",
+      "readiness": 1,
+      "source": "https://github.com/tangency-labs/solidcraft"
     },
     {
       "name": "Backflip AI",
